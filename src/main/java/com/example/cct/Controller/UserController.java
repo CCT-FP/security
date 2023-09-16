@@ -10,8 +10,6 @@ import com.example.cct.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +22,9 @@ import java.util.Map;
 public class UserController {
 
     private final UserSignupService userSignupService;
-   private final UserService userService;
-   private final UserService passwordEncoder;
-    private final UserRepository userRepository;
+    private final UserService userService;
+
+
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
@@ -74,24 +72,3 @@ public class UserController {
     }
 }
 
-//    @GetMapping(value = "/join")
-//    public String join(Model model) {
-//        model.addAttribute("UserDto", new UserDto());
-//        return "join/joinForm";
-//    }
-//
-//    @PostMapping(value = "/join")
-//    public String joinForm(@Valid @RequestBody UserDto userDto, BindingResult bindingResult, Model model) {
-//        if (bindingResult.hasErrors()) {
-//            return "user/userForm";
-//        }
-//        try {
-//            User user = User.createuser(userDto, (PasswordEncoder) passwordEncoder);
-//            userService.saveUser(user);
-//        } catch (IllegalStateException e) {
-//            model.addAttribute("eooroMessage", e.getMessage());
-//            return "user/userForm";
-//        }
-//        return "redirect:/";
-//
-//    }

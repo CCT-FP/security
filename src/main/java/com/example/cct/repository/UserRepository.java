@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 @EntityScan
 public interface UserRepository  extends JpaRepository<User , Long> {
-    User findAllById(Long Id);
+//    User findById(Long Id);
     User findByName(String Name);
     Optional<User> findByEmail(String email);
 }

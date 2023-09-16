@@ -20,9 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class TokenProvider {
-    private String key = "c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK";
+    private static String key = "c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK";
 
-    private long tokenValidTime = 1440 * 60 * 7 * 1000L;
+    private static long tokenValidTime = 1440 * 60 * 7 * 1000L;
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
@@ -30,7 +30,7 @@ public class TokenProvider {
         key = Base64.getEncoder().encodeToString(key.getBytes());
     }
     //토큰 생성
-    public String createToken(String userPk, List<String> roles){
+    public static String createToken(String userPk, List<String> roles){
         Claims claims = Jwts.claims().setSubject(userPk);
         claims.put("roles",roles); // 정보는 키. 벨류로 저장
         Date now = new Date();
@@ -38,7 +38,7 @@ public class TokenProvider {
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + tokenValidTime))
-                .signWith(SignatureAlgorithm.HS256,key ) // 사용할 암호화 알고리즘
+                .signWith(SignatureAlgorithm.HS256, key ) // 사용할 암호화 알고리즘
         // signature에 들어갈 key 값 세팅
                 .compact();
     }

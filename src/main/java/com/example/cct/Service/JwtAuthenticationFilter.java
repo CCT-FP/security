@@ -14,7 +14,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider jwtAuthenticationProvider;
 
     public JwtAuthenticationFilter(TokenProvider Provider) {
-        this.jwtAuthenticationProvider = Provider;
+        jwtAuthenticationProvider = Provider;
     }
 
     @Override

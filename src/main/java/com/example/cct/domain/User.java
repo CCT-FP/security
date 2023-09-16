@@ -23,7 +23,6 @@ public class User extends TimeEntity {
     @Column(length = 100)
     private String password; // 비밀번호
     private String PasswordChk;
-
     private String phone; // 전화번호
     private String brith; //생년월일
 
@@ -47,7 +46,6 @@ public class User extends TimeEntity {
         this.address = address;
         this.roles = roles;
     }
-
 
 
     public static User createuser(UserDto userDto, PasswordEncoder passwordEncoder) {

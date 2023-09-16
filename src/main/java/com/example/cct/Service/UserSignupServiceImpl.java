@@ -52,7 +52,6 @@ public class UserSignupServiceImpl implements UserSignupService{
 
         List<String> roles = new ArrayList<>();
         roles.add(member.getRoles().name());
-
         return TokenProvider.createToken(member.getName(), roles);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class UserService// implements UserDetailsService
     }
 
     private void validateDuplicate(User user) {
-        User findUser = userRepository.findAllById(user.getId());
+        User findUser = (User) userRepository.findAllById(Collections.singleton(user.getId()));
         if (findUser != null) {
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
