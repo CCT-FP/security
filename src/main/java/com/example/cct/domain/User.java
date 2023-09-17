@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Getter
 @Setter
 @Entity
-@Table(name =  "USERS")
+@Table(name =  "USER")
 public class User extends TimeEntity {
 
     @Id
