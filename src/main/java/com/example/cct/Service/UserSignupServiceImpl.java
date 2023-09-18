@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,12 +25,12 @@ public class UserSignupServiceImpl implements UserSignupService{
     @Transactional
     @Override
     public Long signUp(UserDto userDto) throws Exception {
+        if(userRepository.findByUserId(userDto.getUserId()).isPresent()){
+            throw new Exception("이미 존재하는 아이디입니다.");
+        }
         if(userRepository.findByEmail(userDto.getEmail()).isPresent()){
             throw new Exception("이미 존재하는 이메일입니다.");
         }
-//        if(!user.getPassword().equals(userDto.getPassword())){
-//            throw new Exception("비밀번호가 일치하지 않습니다.");
-//        }
         User user = userDto.toEntity();
         user.encodePassword(passwordEncoder);
         user.addUserAuthority(userDto);
@@ -43,7 +44,7 @@ public class UserSignupServiceImpl implements UserSignupService{
     @Override
     public String login(UserSignInDto userSignInDto) {
 
-         User member = userRepository.findByUserId(userSignInDto.getUserId());
+         Optional<User> member = userRepository.findByUserId(userSignInDto.getUserId());
            //      orElseThrow(() -> new IllegalArgumentException("가입되지 않은 Email 입니다."));
 
         String password = userSignInDto.getPassword();
@@ -52,10 +53,8 @@ public class UserSignupServiceImpl implements UserSignupService{
        // }
 
         List<String> roles = new ArrayList<>();
-        roles.add(member.getRoles().name());
-        return TokenProvider.createToken(member.getUserId(), roles);
+        roles.add(member.get().getRoles().name());
+        return TokenProvider.createToken(member.get().getUserId(), roles);
     }
-
-
 }
 

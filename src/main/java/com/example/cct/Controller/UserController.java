@@ -8,32 +8,45 @@ import com.example.cct.domain.User;
 import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.Charset;
+
 @RequiredArgsConstructor
-@RequestMapping("/user")
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserSignupService userSignupService;
     private final UserService userService;
 
-
+    //@CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
-    public Long join(@Valid @RequestBody UserDto dto) throws Exception{
+    public Long join(@RequestBody UserDto dto) throws Exception{
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
         return userSignupService.signUp(dto);
     }
 
+
     @PostMapping("/login")
     public String login(@RequestBody UserSignInDto userSignInDto){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
         return userSignupService.login(userSignInDto);
     }
-
 
     @GetMapping(value = "/login")
     public String loginUser() {
