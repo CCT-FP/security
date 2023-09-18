@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class UserSignupServiceImpl implements UserSignupService{
+public class UserSignupServiceImpl implements UserSignupService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -25,36 +27,35 @@ public class UserSignupServiceImpl implements UserSignupService{
     @Transactional
     @Override
     public Long signUp(UserDto userDto) throws Exception {
-        if(userRepository.findByUserId(userDto.getUserId()).isPresent()){
+        User testUser = userRepository.findByUserId(userDto.getUserId());
+        if (testUser != null) {
             throw new Exception("이미 존재하는 아이디입니다.");
-        }
-        if(userRepository.findByEmail(userDto.getEmail()).isPresent()){
-            throw new Exception("이미 존재하는 이메일입니다.");
         }
         User user = userDto.toEntity();
         user.encodePassword(passwordEncoder);
         user.addUserAuthority(userDto);
         userRepository.save(user);
-
-
         return user.getId();
-        }
+    }
 
 
     @Override
     public String login(UserSignInDto userSignInDto) {
 
-         Optional<User> member = userRepository.findByUserId(userSignInDto.getUserId());
-           //      orElseThrow(() -> new IllegalArgumentException("가입되지 않은 Email 입니다."));
-
-        String password = userSignInDto.getPassword();
-        //if (! membe(passwordEncoder, password) {
-       //     throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-       // }
-
-        List<String> roles = new ArrayList<>();
-        roles.add(member.get().getRoles().name());
-        return TokenProvider.createToken(member.get().getUserId(), roles);
+        try {
+            User member = userRepository.findByUserId(userSignInDto.getUserId());
+            List<String> roles = new ArrayList<>();
+            roles.add(member.getRoles().name());
+            return TokenProvider.createToken(member.getUserId(), roles);
+        } catch (NullPointerException e) {
+            e.printStackTrace(); // 에러 로그를 출력
+         //   sendErrorResponse(HttpServletResponse.SC_CREATED, "존재하지 않는 아이디입니다.");
+        }
+        return null;
     }
+
+//    public void sendErrorResponse(int statusCode, String message) {
+//        HttpServletResponse response = getResponseDto();
+//    }
 }
 
