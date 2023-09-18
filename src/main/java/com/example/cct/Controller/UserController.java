@@ -1,20 +1,18 @@
 package com.example.cct.Controller;
 
 import com.example.cct.DTO.UserDto;
+import com.example.cct.DTO.UserSignInDto;
 import com.example.cct.Service.UserService;
 import com.example.cct.Service.UserSignupService;
 import com.example.cct.domain.User;
 import javax.validation.Valid;
 
-import com.example.cct.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -25,7 +23,6 @@ public class UserController {
     private final UserService userService;
 
 
-
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
     public Long join(@Valid @RequestBody UserDto dto) throws Exception{
@@ -33,8 +30,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Map<String ,String> member){
-        return userSignupService.login(member);
+    public String login(@RequestBody UserSignInDto userSignInDto){
+        return userSignupService.login(userSignInDto);
     }
 
 

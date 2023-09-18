@@ -28,7 +28,6 @@ public class UserService// implements UserDetailsService
 
     public User saveUser(User user) {
         validateDuplicate(user);
-
         return userRepository.save(user);
     }
 
@@ -50,42 +49,6 @@ public class UserService// implements UserDetailsService
         userRepository.save(user);
     }
 
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByName(username); // 사용자 아이디(username)로 사용자를 조회
-//
-//        if (user == null) {
-//            throw new UsernameNotFoundException("User not found with username: " + username);
-//        }
-//
-//        List<GrantedAuthority> authorities = user.getRoles()
-//                .stream()
-//                .map(role -> new SimpleGrantedAuthority(role))
-//                .collect(Collectors.toList());
-//
-//        return User.builder()
-//                .name(user.getEmail())
-//                .password(user.getPassword())
-//                .authorities(authorities) // 권한(역할) 설정
-//                .build();
-//    }
-
-
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByName(username);
-//
-//        if (user == null) {
-//            throw new UsernameNotFoundException(user.getEmail());
-//        }
-//        return User.builder()
-//                .name(user.getEmail())
-//                .password(user.getPassword())
-//                .roles(String.join(",", user.getRoles()))
-//                .build();
-//    }
 
 }
 

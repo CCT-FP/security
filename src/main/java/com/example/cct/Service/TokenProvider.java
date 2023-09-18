@@ -30,8 +30,8 @@ public class TokenProvider {
         key = Base64.getEncoder().encodeToString(key.getBytes());
     }
     //토큰 생성
-    public static String createToken(String userPk, List<String> roles){
-        Claims claims = Jwts.claims().setSubject(userPk);
+    public static String createToken(String userId, List<String> roles){
+        Claims claims = Jwts.claims().setSubject(userId);
         claims.put("roles",roles); // 정보는 키. 벨류로 저장
         Date now = new Date();
         return Jwts.builder()

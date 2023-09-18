@@ -11,6 +11,6 @@ import java.util.Optional;
 @EntityScan
 public interface UserRepository  extends JpaRepository<User , Long> {
 //    User findById(Long Id);
-    User findByName(String Name);
+    User findByUserId(String userID);
     Optional<User> findByEmail(String email);
 }

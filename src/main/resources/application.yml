@@ -1,14 +1,15 @@
 #spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 #spring.datasource.url=jdbc:mysql://localhost:3306/CCT?serverTimezone=UTC
 #spring.datasource.username=root
-#spring.datasource.password=1213
+#spring.datasource.password=db12
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/user
+    url: jdbc:mysql://localhost:3306/cct
     username: root
-    password: 1234
+    password: db12
+
 
   security:
     jwt:
@@ -25,6 +26,18 @@ spring:
     show_sql: true
     format_sql: true
 
+  swagger:
+    enabled: true # Swagger를 활성화합니다.
+
+  springfox:
+    documentation:
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+swagger-ui:
+  enabled: true # Swagger UI를 활성화합니다.
 #    default_batch_fetch_size: 1000
 
 logging.level:
