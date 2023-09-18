@@ -1,5 +1,6 @@
 package com.example.cct.Service;
 
+import com.example.cct.DTO.UserDto;
 import com.example.cct.domain.User;
 import com.example.cct.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -51,41 +52,39 @@ public class UserService// implements UserDetailsService
     }
 
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByName(username); // 사용자 아이디(username)로 사용자를 조회
-//
-//        if (user == null) {
-//            throw new UsernameNotFoundException("User not found with username: " + username);
-//        }
-//
-//        List<GrantedAuthority> authorities = user.getRoles()
-//                .stream()
-//                .map(role -> new SimpleGrantedAuthority(role))
-//                .collect(Collectors.toList());
-//
-//        return User.builder()
-//                .name(user.getEmail())
-//                .password(user.getPassword())
-//                .authorities(authorities) // 권한(역할) 설정
-//                .build();
-//    }
+    public void deleteUserById(Long Id) {
+        // ID로 사용자 검색
+        User user = userRepository.findById(Id).orElse(null);
+
+        if (user != null) {
+            // 사용자를 삭제로 표시합니다 (사용자 엔터티에 'deleted'라는 필드가 있다고 가정합니다)
+            user.setDeleted(true);
+
+            // 업데이트된 사용자 저장 (소프트 삭제)
+            userRepository.save(user);
+        }
+    }
+
+    public void updateUser(UserDto userDto) {
+        // ID로 사용자 검색
+        User user = userRepository.findById(userDto.getId()).orElse(null);
+
+        if (user != null) {
+            // DTO를 기반으로 사용자 필드 업데이트
+            user.setName(userDto.getName());
+            user.setEmail(userDto.getEmail());
+            user.setAddress(userDto.getAddress());
+            user.setPhone(userDto.getPhone());
+            user.setBrith(userDto.getBrith());
+
+            // 업데이트된 사용자 저장
+            userRepository.save(user);
+        }
+    }
 
 
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByName(username);
-//
-//        if (user == null) {
-//            throw new UsernameNotFoundException(user.getEmail());
-//        }
-//        return User.builder()
-//                .name(user.getEmail())
-//                .password(user.getPassword())
-//                .roles(String.join(",", user.getRoles()))
-//                .build();
-//    }
-
+    public boolean delet(Long id, String password) {
+        return false;
+    }
 }
 

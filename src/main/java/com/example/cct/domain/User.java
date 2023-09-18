@@ -71,4 +71,6 @@ public class User extends TimeEntity {
     }
 
 
+    public void setDeleted(boolean b) {
+    }
 }
