@@ -1,5 +1,7 @@
 package com.example.cct.Controller;
 
+import com.example.cct.Config.CommonResponse;
+import com.example.cct.DTO.UserCheck;
 import com.example.cct.DTO.UserDto;
 import com.example.cct.DTO.UserSignInResponseDto;
 import com.example.cct.DTO.UserSignInDto;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,6 +50,31 @@ public class UserController {
         headers.set("Access-Control-Allow-Origin", "*");
         headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
         return userSignupService.login(userSignInDto);
+    }
+
+    @PostMapping("/idCheck")
+    public ResponseEntity<CommonResponse> idCheck(@RequestBody UserCheck userCheck){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
+         return userSignupService.idCheck(userCheck);
+    }
+    @PostMapping("/emailCheck")
+    public ResponseEntity<CommonResponse> emailCheck(@RequestBody UserCheck userCheck){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
+        return userSignupService.idCheck(userCheck);
+    }
+    @PostMapping("/phoneCheck")
+    public ResponseEntity<CommonResponse> phoneCheck(@RequestBody UserCheck userCheck){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
+        return userSignupService.idCheck(userCheck);
     }
 
     @GetMapping(value = "/login")
