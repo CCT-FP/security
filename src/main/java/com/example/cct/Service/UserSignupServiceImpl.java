@@ -2,6 +2,7 @@ package com.example.cct.Service;
 
 
 import com.example.cct.DTO.UserDto;
+import com.example.cct.DTO.UserSignInResponseDto;
 import com.example.cct.DTO.UserSignInDto;
 import com.example.cct.domain.User;
 import com.example.cct.repository.UserRepository;
@@ -10,11 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,6 +26,7 @@ public class UserSignupServiceImpl implements UserSignupService {
     @Override
     public Long signUp(UserDto userDto) throws Exception {
         User testUser = userRepository.findByUserId(userDto.getUserId());
+
         if (testUser != null) {
             throw new Exception("이미 존재하는 아이디입니다.");
         }
@@ -40,17 +39,27 @@ public class UserSignupServiceImpl implements UserSignupService {
 
 
     @Override
-    public String login(UserSignInDto userSignInDto) {
-
+    public UserSignInResponseDto login(UserSignInDto userSignInDto) {
+        UserSignInResponseDto userSignInResponseDto = new UserSignInResponseDto();
         try {
             User member = userRepository.findByUserId(userSignInDto.getUserId());
+
             List<String> roles = new ArrayList<>();
             roles.add(member.getRoles().name());
-            return TokenProvider.createToken(member.getUserId(), roles);
-        } catch (NullPointerException e) {
+            userSignInResponseDto.setToken(TokenProvider.createToken(member.getUserId(), roles));
+            userSignInResponseDto.setUserId(member.getUserId());
+            userSignInResponseDto.setName(member.getName());
+            userSignInResponseDto.setId(member.getId());
+
+            return userSignInResponseDto;
+        }
+
+
+        catch (NullPointerException e) {  //존재하지 않는 로그인시 예외 처리
             e.printStackTrace(); // 에러 로그를 출력
          //   sendErrorResponse(HttpServletResponse.SC_CREATED, "존재하지 않는 아이디입니다.");
         }
+
         return null;
     }
 

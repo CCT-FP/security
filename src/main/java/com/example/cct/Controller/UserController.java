@@ -1,6 +1,7 @@
 package com.example.cct.Controller;
 
 import com.example.cct.DTO.UserDto;
+import com.example.cct.DTO.UserSignInResponseDto;
 import com.example.cct.DTO.UserSignInDto;
 import com.example.cct.Service.UserService;
 import com.example.cct.Service.UserSignupService;
@@ -40,7 +41,7 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login(@RequestBody UserSignInDto userSignInDto){
+    public UserSignInResponseDto login(@RequestBody UserSignInDto userSignInDto){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
         headers.set("Access-Control-Allow-Origin", "*");
