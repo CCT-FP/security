@@ -13,38 +13,37 @@ import org.hibernate.validator.constraints.Length;
 
 @NoArgsConstructor
 @Getter
-public class UserDto  {
-        @NotBlank(message = "이름은 필수 입력 값입니다.")
-         private Long id;
+public class UserDto {
 
-        @NotBlank(message = "이름은 필수 입력 값입니다.")
-        private String name;
+    @NotBlank(message = "아이디는 필수 입력 값입니다.")
+    private String userId;
 
-        @NotBlank(message = "이메일은 필수 입력 값입니다.")
-        @Email(message = "이메일 형식으로 입력해주세요.")
-        private String email;
+    @NotBlank(message = "이름은 필수 입력 값입니다.")
+    private String name;
 
-        @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
-        @Length(min = 4, max = 16, message = "비밀번호는 4자 이상, 16자 이하로 입력해주세요.")
-        private String password;
+    @NotBlank(message = "이메일은 필수 입력 값입니다.")
+    @Email(message = "이메일 형식으로 입력해주세요.")
+    private String email;
 
-        @NotBlank(message = "주소는 필수 입력 값입니다.")
-        private String address;
+    @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+    @Length(min = 4, max = 16, message = "비밀번호는 4자 이상, 16자 이하로 입력해주세요.")
+    private String password;
 
-        @NotBlank(message = "전화번호를 입력해주세요.")
-        private String phone;
-        @NotBlank(message = "생년월일을 입력해주세요.")
-        private String brith;
+    private String address;
 
-        @NotEmpty(message = "자신의 권한을 선택해주세요")
-        private MemberRole roles;
+    @NotBlank(message = "전화번호를 입력해주세요.")
+    private String phone;
 
-        @NotBlank(message = "비밀번호 확인란을 입력해주세요")
-        private String PasswordChk;
+    private String brith;
+
+    private MemberRole roles;
+
+    //담당자명
+    private String cname;
 
     @Builder
-    public UserDto(Long id, String name, String password, String phone, String brith, String email, String address, MemberRole roles) {
-        this.id = id;
+    public UserDto(String userId, String name, String password, String phone, String brith, String email, String address, MemberRole roles, String cname) {
+        this.userId = userId;
         this.name = name;
         this.password = password;
         this.phone = phone;
@@ -52,16 +51,36 @@ public class UserDto  {
         this.email = email;
         this.address = address;
         this.roles = roles;
+        this.cname = cname;
     }
 
     @Builder
-    public User toEntity(){
-        return User.builder()
-                .email(email)
-                .name(name)
-                .password(password)
-                .roles(MemberRole.USER)
-                .build();
+    public User toEntity() {
+        //프리랜서
+        if (this.roles.equals("USER")) {
+            return User.builder()
+                    .userId(userId)
+                    .name(name)
+                    .phone(phone)
+                    .brith(brith) //
+                    .email(email)
+                    .password(password)
+                    .roles(MemberRole.USER)
+                    .build();
+        }
+        //기업
+        else {
+            return User.builder()
+                    .userId(userId)
+                    .phone(phone)
+                    .cname(cname)//담당자 명
+                    .address(address)
+                    .email(email)
+                    .name(name) //회사명
+                    .password(password)
+                    .roles(MemberRole.ADMIN)
+                    .build();
+        }
     }
-    }
+}
 

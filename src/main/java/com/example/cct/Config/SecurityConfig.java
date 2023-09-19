@@ -1,6 +1,7 @@
 package com.example.cct.Config;
 
 import com.example.cct.Service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -17,17 +18,47 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.http.HttpSession;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
     @Autowired
     UserService userService;
 
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+//        http.authorizeRequests(request -> request.anyRequest().authenticated());
+//        http
+//                .formLogin()
+//                .usernameParameter("userId")
+//                .passwordParameter("passwd")
+//                .successHandler((request, response, authentication) -> {
+//                    response.sendRedirect("/");
+//                })
+//                .failureHandler((request, response, exception) -> {
+//                    response.sendRedirect("/login");
+//                })
+//                .permitAll();
+//
+        http.logout()
+                .logoutUrl("/logout")   // 로그아웃 처리 URL
+                .addLogoutHandler((request, response, authentication) -> {
+                    HttpSession session = request.getSession();
+                    if (session != null) {
+                        session.invalidate();
+                    }
+                })  // 로그아웃 핸들러 추가
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.sendRedirect("/login");
+                }) // 로그아웃 성공 핸들러
+                .deleteCookies("remember-me"); // 로그아웃 후 삭제할 쿠키 지정
 
         http
                 .formLogin().disable()
@@ -41,43 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/join").permitAll()
                 .antMatchers("/user").hasRole("USER")
                 .anyRequest().authenticated();
-//        http
-//                .formLogin()
-//                    .loginPage("/user/login")
-//                    .defaultSuccessUrl("/")
-//                    .usernameParameter("email")
-//                    .failureUrl("/user/login/error")
-//                    .and()
-//                .logout()
-//                    .logoutRequestMatcher(new AntPathRequestMatcher("/users/logout"))
-//                    .logoutSuccessUrl("/")
-//        ;
-//
-//        http
-//                .authorizeRequests()
-//                .mvcMatchers("/", "/uesr/**", "/item/**", "/assets/**", "/h2-console/**").permitAll()
-//                .mvcMatchers("/admin/**").hasRole("ADMIN")
-//                .anyRequest().authenticated()
-//                ;
-//
-//        http
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new AAuthenticationEntryPoint())
-//        ;
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/public/**").permitAll() // 모든 사용자에게 허용
-//                .antMatchers("/private/**").authenticated() // 인증된 사용자에게만 허용
-//                .and()
-//                .formLogin()
-//                .loginPage("/login") // 로그인 페이지 지정
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .logoutUrl("/logout") // 로그아웃 URL 지정
-//                .logoutSuccessUrl("/login?logout") // 로그아웃 후 리다이렉트할 URL
-//                .permitAll();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -174,3 +170,42 @@ public void configure(WebSecurity webSecurity) throws Exception{
 ////        return new BCryptPasswordEncoder();
 ////    }
 //}
+
+
+
+//        http
+//                .formLogin()
+//                    .loginPage("/user/login")
+//                    .defaultSuccessUrl("/")
+//                    .usernameParameter("email")
+//                    .failureUrl("/user/login/error")
+//                    .and()
+//                .logout()
+//                    .logoutRequestMatcher(new AntPathRequestMatcher("/users/logout"))
+//                    .logoutSuccessUrl("/")
+//        ;
+//
+//        http
+//                .authorizeRequests()
+//                .mvcMatchers("/", "/uesr/**", "/item/**", "/assets/**", "/h2-console/**").permitAll()
+//                .mvcMatchers("/admin/**").hasRole("ADMIN")
+//                .anyRequest().authenticated()
+//                ;
+//
+//        http
+//                .exceptionHandling()
+//                .authenticationEntryPoint(new AAuthenticationEntryPoint())
+//        ;
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/public/**").permitAll() // 모든 사용자에게 허용
+//                .antMatchers("/private/**").authenticated() // 인증된 사용자에게만 허용
+//                .and()
+//                .formLogin()
+//                .loginPage("/login") // 로그인 페이지 지정
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .logoutUrl("/logout") // 로그아웃 URL 지정
+//                .logoutSuccessUrl("/login?logout") // 로그아웃 후 리다이렉트할 URL
+//                .permitAll();

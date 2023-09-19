@@ -51,6 +51,10 @@ public class UserService// implements UserDetailsService
         userRepository.save(user);
     }
 
+    public User getUserId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
 
     public void deleteUserById(Long Id) {
         // ID로 사용자 검색
@@ -67,7 +71,7 @@ public class UserService// implements UserDetailsService
 
     public void updateUser(UserDto userDto) {
         // ID로 사용자 검색
-        User user = userRepository.findById(userDto.getId()).orElse(null);
+        User user = userRepository.findById(userDto.toEntity().getId()).orElse(null);
 
         if (user != null) {
             // DTO를 기반으로 사용자 필드 업데이트
@@ -76,6 +80,7 @@ public class UserService// implements UserDetailsService
             user.setAddress(userDto.getAddress());
             user.setPhone(userDto.getPhone());
             user.setBrith(userDto.getBrith());
+            user.setPassword(user.getPassword());
 
             // 업데이트된 사용자 저장
             userRepository.save(user);
