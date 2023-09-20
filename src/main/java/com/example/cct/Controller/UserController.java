@@ -19,12 +19,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @RequestMapping("/user")
 public class UserController {
 
@@ -41,8 +42,6 @@ public class UserController {
         headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
         return userSignupService.signUp(dto);
     }
-
-
     @PostMapping("/login")
     public UserSignInResponseDto login(@RequestBody UserSignInDto userSignInDto){
         HttpHeaders headers = new HttpHeaders();
@@ -52,30 +51,6 @@ public class UserController {
         return userSignupService.login(userSignInDto);
     }
 
-    @PostMapping("/idCheck")
-    public ResponseEntity<CommonResponse> idCheck(@RequestBody UserCheck userCheck){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
-        headers.set("Access-Control-Allow-Origin", "*");
-        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
-         return userSignupService.idCheck(userCheck);
-    }
-    @PostMapping("/emailCheck")
-    public ResponseEntity<CommonResponse> emailCheck(@RequestBody UserCheck userCheck){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
-        headers.set("Access-Control-Allow-Origin", "*");
-        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
-        return userSignupService.idCheck(userCheck);
-    }
-    @PostMapping("/phoneCheck")
-    public ResponseEntity<CommonResponse> phoneCheck(@RequestBody UserCheck userCheck){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("text","xml", Charset.forName("UTF-8")));
-        headers.set("Access-Control-Allow-Origin", "*");
-        headers.set("Access-Control-Allow-Methods","GET,POST,OPTIONS,DELETE,PUT");
-        return userSignupService.idCheck(userCheck);
-    }
 
     @GetMapping(value = "/login")
     public String loginUser() {
@@ -88,6 +63,7 @@ public class UserController {
         return "/user/userLogin";
     }
 
+
     // 업데이트
     @GetMapping("/update/user")
     public String updateUser(Model model, Authentication authentication) {
@@ -99,7 +75,6 @@ public class UserController {
         return "/users/updateUser";
     }
 
-
     @PostMapping("/update/user")
     public String updateUser(@Valid UserDto userDto, BindingResult bindingResult, Model model, Authentication authentication) {
         if (bindingResult.hasErrors()) {
@@ -108,6 +83,27 @@ public class UserController {
         }
         model.addAttribute("successMessage", "사용자 정보가 업데이트되었습니다.");
         return "succesPage";
+    }
+
+    //마이페이지 이동을 위한 사용자 조회
+    @GetMapping("/user/{userId}/profile")
+    public String myPage(@PathVariable Long userId, Model model) {
+        User user = userService.getUserId(userId);
+        model.addAttribute("user", user);
+        return "profile";
+    }
+    //회원 탈퇴
+    @PostMapping("/delet/user")
+    public String memberDelet(@RequestParam String password, Model model, Authentication authentication){
+        User user = (User) authentication.getPrincipal();
+        boolean result = userService.delet(user.getId(), password);
+        if (result){
+            return "/logout";
+        }
+        else{
+            model.addAttribute("worronfPassword", "비밀번호가 맞지 않습니다.");
+            return "/delet/user";
+        }
     }
 }
 

@@ -73,6 +73,7 @@ public class User extends TimeEntity {
     public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);
     }
-
+    public void setDeleted(boolean b) {
+    }
 
 }

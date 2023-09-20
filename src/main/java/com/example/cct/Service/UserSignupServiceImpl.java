@@ -40,18 +40,11 @@ public class UserSignupServiceImpl implements UserSignupService {
 
     @Override
     public ResponseEntity<CommonResponse> idCheck(UserCheck userCheck) {
-
         try {
             Optional<User> checkUser = userRepository.findByUserId(userCheck.getUserCheck());
         } catch (IllegalArgumentException il) {
-            return ResponseEntity.ok(new CommonResponse("ss", 200));
-
-            //      userRepository.findByUserId(userCheck.getUserCheck())
-            //             .ifPresent(m -> {
-            //                         throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
-            //                    });
-
-        }  return ResponseEntity.ok(new CommonResponse("FAIL", 403));
+            return ResponseEntity.ok(new CommonResponse("FAIL", 403));
+        }  return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
     }
 
     @Override
@@ -60,16 +53,16 @@ public class UserSignupServiceImpl implements UserSignupService {
             Optional<User> checkUser = userRepository.findByEmail(userCheck.getUserCheck());
         } catch (IllegalArgumentException il) {
             return ResponseEntity.ok(new CommonResponse("FAIL", 403));
-        }return ResponseEntity.ok(new CommonResponse("SU", 200));
+        }return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
     }
 
     @Override
     public ResponseEntity<CommonResponse> phoneCheck(UserCheck userCheck) {
         try {
-            Optional<User> checkUser = userRepository.findByEmail(userCheck.getUserCheck());
+            Optional<User> checkUser = userRepository.findByPhone(userCheck.getUserCheck());
         } catch (IllegalArgumentException il) {
             return ResponseEntity.ok(new CommonResponse("FAIL", 403));
-        }return ResponseEntity.ok(new CommonResponse("SU", 200));
+        }return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
     }
 
 
@@ -77,7 +70,7 @@ public class UserSignupServiceImpl implements UserSignupService {
     @Override
     public UserSignInResponseDto login(UserSignInDto userSignInDto) {
         UserSignInResponseDto userSignInResponseDto = new UserSignInResponseDto();
-        try {
+
             Optional<User> member = userRepository.findByUserId(userSignInDto.getUserId());
 
             List<String> roles = new ArrayList<>();
@@ -88,15 +81,7 @@ public class UserSignupServiceImpl implements UserSignupService {
             userSignInResponseDto.setId(member.get().getId());
 
             return userSignInResponseDto;
-        }
 
-
-        catch (NullPointerException e) {  //존재하지 않는 로그인시 예외 처리
-            e.printStackTrace(); // 에러 로그를 출력
-         //   sendErrorResponse(HttpServletResponse.SC_CREATED, "존재하지 않는 아이디입니다.");
-        }
-
-        return null;
     }
 
 

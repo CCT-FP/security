@@ -1,5 +1,6 @@
 package com.example.cct.Service;
 
+import com.example.cct.DTO.UserDto;
 import com.example.cct.domain.User;
 import com.example.cct.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class UserService// implements UserDetailsService
 
     public User saveUser(User user) {
         validateDuplicate(user);
+
         return userRepository.save(user);
     }
 
@@ -49,6 +51,48 @@ public class UserService// implements UserDetailsService
         userRepository.save(user);
     }
 
+    public User getUserId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    }
 
+    public void deleteUserById(Long Id) {
+        // ID로 사용자 검색
+        User user = userRepository.findById(Id).orElse(null);
+
+        if (user != null) {
+            // 사용자를 삭제로 표시합니다 (사용자 엔터티에 'deleted'라는 필드가 있다고 가정합니다)
+            user.setDeleted(true);
+
+            // 업데이트된 사용자 저장 (소프트 삭제)
+            userRepository.save(user);
+        }
+    }
+
+    public void updateUser(UserDto userDto) {
+        // ID로 사용자 검색
+        User user = userRepository.findById(userDto.toEntity().getId()).orElse(null);
+
+        if (user != null) {
+            // DTO를 기반으로 사용자 필드 업데이트
+            user.setName(userDto.getName());
+            user.setEmail(userDto.getEmail());
+            user.setAddress(userDto.getAddress());
+            user.setPhone(userDto.getPhone());
+            user.setBrith(userDto.getBrith());
+            user.setPassword(user.getPassword());
+
+            // 업데이트된 사용자 저장
+            userRepository.save(user);
+        }
+    }
+
+
+    public boolean delet(Long id, String password) {
+        return false;
+    }
 }
+
+
+
 
